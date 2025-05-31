@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Te Amo</title>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: url('stars.jpg') no-repeat center center fixed;
+      background-size: cover;
+      font-family: 'Press Start 2P', cursive;
+    }
+
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: -1;
+    }
+
+    .center-text {
+      position: absolute;
+      top: 35%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 30px;
+      color: #ff6600;
+      text-shadow: 0 0 10px #ff6600, 0 0 20px #ff3300;
+      border: 3px solid #ff6600;
+      padding: 20px;
+      box-shadow: 0 0 15px #ff6600;
+      z-index: 1;
+      text-align: center;
+    }
+
+    .word {
+      position: absolute;
+      font-size: 12px;
+      opacity: 0.9;
+      animation: fall linear;
+      color: white;
+      z-index: 1;
+    }
+
+    @keyframes fall {
+      0% { transform: translateY(-10%); }
+      100% { transform: translateY(110vh); }
+    }
+
+    .boton-container {
+      position: absolute;
+      bottom: 50px;
+      width: 100%;
+      text-align: center;
+      z-index: 2;
+    }
+
+    .boton-pixel {
+      font-family: 'Press Start 2P', cursive;
+      font-size: 14px;
+      color: #fff;
+      background-color: #ff3399;
+      border: 4px solid #ff66cc;
+      padding: 15px 25px;
+      cursor: pointer;
+      text-shadow: 1px 1px 2px #000;
+      box-shadow: 0 0 10px #ff66cc;
+      transition: transform 0.2s;
+    }
+
+    .boton-pixel:hover {
+      transform: scale(1.1);
+    }
+
+    .mensaje-oculto {
+      display: none;
+      position: absolute;
+      top: 65%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-family: 'Press Start 2P', cursive;
+      color: #ffccff;
+      font-size: 16px;
+      padding: 15px;
+      text-align: center;
+      background: rgba(0, 0, 0, 0.6);
+      border: 3px dashed #ff66cc;
+      box-shadow: 0 0 10px #ff99cc;
+      z-index: 3;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="stars"></canvas>
+
+  <div class="center-text">TE AMO</div>
+
+  <div class="boton-container">
+    <button class="boton-pixel" onclick="mostrarMensaje()">DAME CLICK</button>
+  </div>
+
+  <div id="mensaje-lindo" class="mensaje-oculto">
+    Estas bien preciosota Melanie muack
+  </div>
+
+  <script>
+    // Fondo estrellado en canvas
+    const canvas = document.getElementById('stars');
+    const ctx = canvas.getContext('2d');
+
+    let width = canvas.width = window.innerWidth;
+    let height = canvas.height = window.innerHeight;
+
+    let stars = [];
+
+    for (let i = 0; i < 200; i++) {
+      stars.push({
+        x: Math.random() * width,
+        y: Math.random() * height,
+        r: Math.random() * 1.5 + 0.5,
+        d: Math.random() * 0.5 + 0.2
+      });
+    }
+
+    function drawStars() {
+      ctx.clearRect(0, 0, width, height);
+      ctx.fillStyle = '#ffffff';
+      for (let i = 0; i < stars.length; i++) {
+        let s = stars[i];
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      updateStars();
+    }
+
+    function updateStars() {
+      for (let i = 0; i < stars.length; i++) {
+        stars[i].y += stars[i].d;
+        if (stars[i].y > height) {
+          stars[i].y = 0;
+          stars[i].x = Math.random() * width;
+        }
+      }
+    }
+
+    function animateStars() {
+      drawStars();
+      requestAnimationFrame(animateStars);
+    }
+
+    animateStars();
+
+    window.addEventListener('resize', () => {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+    });
+
+    // Palabras bonitas cayendo
+    const palabras = [
+      'PRECIOSA', 'PERFECTA', 'GUAPA', 'LINDA', '<3',
+      'TE QUIERO', 'MI VIDA', 'HERMOSA', 'BONITA', 'ENCANTADORA'
+    ];
+
+    function crearPalabra() {
+      const palabra = document.createElement('div');
+      palabra.className = 'word';
+      palabra.textContent = palabras[Math.floor(Math.random() * palabras.length)];
+
+      palabra.style.left = Math.random() * window.innerWidth + 'px';
+      palabra.style.animationDuration = (Math.random() * 5 + 3) + 's';
+      palabra.style.color = getRandomColor();
+      palabra.style.fontSize = (Math.random() * 10 + 12) + 'px';
+
+      document.body.appendChild(palabra);
+      setTimeout(() => palabra.remove(), 8000);
+    }
+
+    function getRandomColor() {
+      const colores = ['#ff66cc', '#66ccff', '#ffff66', '#ff9966', '#99ff99', '#ff3333', '#cc66ff'];
+      return colores[Math.floor(Math.random() * colores.length)];
+    }
+
+    setInterval(crearPalabra, 200);
+
+    // Corazones cayendo
+    const emojiCorazones = ['💖','💘','💝','❤️','💕','💞','💓','💗'];
+
+    function crearCorazon() {
+      const corazon = document.createElement('div');
+      corazon.textContent = emojiCorazones[Math.floor(Math.random() * emojiCorazones.length)];
+      corazon.style.position = 'absolute';
+      corazon.style.left = Math.random() * window.innerWidth + 'px';
+      corazon.style.top = '-40px';
+      corazon.style.fontSize = (Math.random() * 20 + 20) + 'px';
+      corazon.style.zIndex = 1;
+      corazon.style.opacity = 0.8;
+      corazon.style.animation = 'caer 6s linear forwards';
+
+      document.body.appendChild(corazon);
+      setTimeout(() => corazon.remove(), 6000);
+    }
+
+    setInterval(crearCorazon, 400);
+
+    const style = document.createElement('style');
+    style.innerHTML = `
+      @keyframes caer {
+        0% {
+          transform: translateY(0) scale(1);
+          opacity: 1;
+        }
+        100% {
+          transform: translateY(100vh) scale(1.5);
+          opacity: 0;
+        }
+      }
+    `;
+    document.head.appendChild(style);
+
+    // Mostrar mensaje al hacer click
+    function mostrarMensaje() {
+      const mensaje = document.getElementById('mensaje-lindo');
+      mensaje.style.display = 'block';
+    }
+  </script>
+</body>
+</html>
